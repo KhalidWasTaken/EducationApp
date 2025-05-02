@@ -1,0 +1,4 @@
+Students:
+Student - Name: Khalid, Age: 20, Courses: [English]
+Teachers:
+Teacher - Name: MR. OLIVER, Age: 45, Subject: Math
