@@ -1,3 +1,5 @@
+package app;
+
 // EducationAppGUI.java
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +10,7 @@ public class EducationAppGUI extends JFrame {
     private java.util.List<Student> students = new ArrayList<>();
     private java.util.List<Teacher> teachers = new ArrayList<>();
     private JTextArea outputArea;
-
+  
     public EducationAppGUI() {
         setTitle("Quality Education App");
         setSize(600, 400);

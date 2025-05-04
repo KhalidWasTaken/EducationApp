@@ -1,4 +1,4 @@
-// Teacher.java
+package app;
 public class Teacher extends User {
     private String subject;
 
