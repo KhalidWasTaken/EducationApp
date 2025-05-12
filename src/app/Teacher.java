@@ -1,4 +1,5 @@
 package app;
+
 public class Teacher extends User {
     private String subject;
 
@@ -12,4 +13,3 @@ public class Teacher extends User {
         return "Teacher - Name: " + name + ", Age: " + age + ", Subject: " + subject;
     }
 }
-    

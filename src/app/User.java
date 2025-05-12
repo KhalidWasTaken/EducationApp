@@ -1,4 +1,5 @@
 package app;
+
 public abstract class User {
     protected String name;
     protected int age;
