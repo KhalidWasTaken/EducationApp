@@ -1,9 +1,10 @@
 package app;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Student extends User {
-    private List<String> courses = new ArrayList<>();
+    private List<Course> courses = new ArrayList<>();
 
     public Student(String name, int age) {
         super(name, age);
@@ -18,4 +19,3 @@ public class Student extends User {
         return "Student - Name: " + name + ", Age: " + age + ", Courses: " + courses;
     }
 }
-    

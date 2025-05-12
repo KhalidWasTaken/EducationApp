@@ -1,6 +1,5 @@
 package app;
 
-// EducationAppGUI.java
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -10,7 +9,7 @@ public class EducationAppGUI extends JFrame {
     private java.util.List<Student> students = new ArrayList<>();
     private java.util.List<Teacher> teachers = new ArrayList<>();
     private JTextArea outputArea;
-  
+
     public EducationAppGUI() {
         setTitle("Quality Education App");
         setSize(600, 400);
@@ -57,11 +56,12 @@ public class EducationAppGUI extends JFrame {
             while (true) {
                 String course = JOptionPane.showInputDialog(this, "Enter Course (or leave blank to finish):");
                 if (course == null || course.trim().isEmpty()) break;
-                s.enroll(course);
+                s.enroll(new Course(course));
             }
 
             students.add(s);
-            outputArea.append("Student added.\n");
+            outputArea.append("Student added.
+");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Invalid input.");
         }
@@ -77,7 +77,8 @@ public class EducationAppGUI extends JFrame {
             if (subject == null || subject.trim().isEmpty()) return;
 
             teachers.add(new Teacher(name, age, subject));
-            outputArea.append("Teacher added.\n");
+            outputArea.append("Teacher added.
+");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Invalid input.");
         }
