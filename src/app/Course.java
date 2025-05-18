@@ -13,23 +13,21 @@ public class Course {
         return name;
     }
 
-    // Make course name printable
     @Override
     public String toString() {
         return name;
     }
 
-    // So courses can be compared (e.g., for removing duplicates)
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Course)) return false;
-        Course other = (Course) obj;
-        return name.equalsIgnoreCase(other.name);
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Course course = (Course) obj;
+        return Objects.equals(name, course.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name.toLowerCase());
+        return Objects.hash(name);
     }
 }

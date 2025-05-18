@@ -1,108 +1,66 @@
 package education;
-
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
-    private static final String STUDENTS_FILE = "students.txt";
-    private static final String TEACHERS_FILE = "teachers.txt";
-
-    private List<Student> students;
-    private List<Teacher> teachers;
-
-    public Database() {
-        students = new ArrayList<>();
-        teachers = new ArrayList<>();
-        loadStudents();
-        loadTeachers();
-    }
+	private static final String STUDENT_FILE = "students.txt";
 
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("students.txt"))) {
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                try {
-                    students.add(Student.fromDataString(line));
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Skipping bad student line: " + line);
-                }
+                students.add(Student.fromDataString(line));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not load students: " + e.getMessage());
         }
+
         return students;
     }
 
+    public static void saveStudents(List<Student> students) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STUDENT_FILE))) {
+            for (Student s : students) {
+                writer.write(s.toDataString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Could not save students: " + e.getMessage());
+        }
+    }
+    private static final String TEACHER_FILE = "teachers.txt";
 
     public static List<Teacher> loadTeachers() {
         List<Teacher> teachers = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(TEACHERS_FILE))) {
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(TEACHER_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                try {
-                    teachers.add(Teacher.fromDataString(line));
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Skipping invalid teacher entry: " + line);
-                }
+                teachers.add(Teacher.fromDataString(line));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not load teachers: " + e.getMessage());
         }
+
         return teachers;
     }
-    
-    public static void saveStudents(List<Student> students) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("students.txt"))) {
-            for (Student student : students) {
-                writer.write(student.toDataString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public static void saveTeachers(List<Teacher> teachers) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("teachers.txt"))) {
-            for (Teacher teacher : teachers) {
-                writer.write(teacher.toDataString());
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TEACHER_FILE))) {
+            for (Teacher t : teachers) {
+                writer.write(t.toDataString());
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Could not save teachers: " + e.getMessage());
         }
     }
 
-    public void addStudent(Student student) {
-        students.add(student);
-        saveStudents(students); 
-    }
-    public void addTeacher(Teacher teacher) {
-        teachers.add(teacher);
-        saveTeachers(teachers); 
-    }
-
-    public User authenticate(String username, String password) {
-        for (Student s : students) {
-            if (s.getUsername().equals(username) && s.getPassword().equals(password)) {
-                return s;
-            }
-        }
-        for (Teacher t : teachers) {
-            if (t.getUsername().equals(username) && t.getPassword().equals(password)) {
-                return t;
-            }
-        }
-        return null;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
-    public List<Teacher> getTeachers() {
-        return teachers;
-    }
 }

@@ -1,39 +1,34 @@
 package education;
 
 public abstract class User {
+    protected String name;
+    protected int age;
     protected String username;
     protected String password;
-    protected String firstName;
-    protected String lastName;
 
-    public User(String username, String password, String firstName, String lastName) {
+    public User(String name, int age, String username, String password) {
+        this.name = name;
+        this.age = age;
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean checkPassword(String inputPassword) {
+        return this.password.equals(inputPassword);
     }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public abstract String getInfo();
-
     
-    public String toDataString() {
-        return username + "," + password;
-    }
 
+    public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public abstract String getInfo();
 }
