@@ -1,107 +1,139 @@
-package app;
+package education;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.util.*;
+import java.util.List;
 
-public class EducationAppGUI extends JFrame {
-    private java.util.List<Student> students = new ArrayList<>();
-    private java.util.List<Teacher> teachers = new ArrayList<>();
-    private JTextArea outputArea;
+public class EducationAppGUI {
+    private JFrame frame;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
     public EducationAppGUI() {
-        setTitle("Quality Education App");
-        setSize(600, 400);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        frame = new JFrame("Education App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 5));
-        JButton addStudentBtn = new JButton("Add Student");
-        JButton addTeacherBtn = new JButton("Add Teacher");
-        JButton listUsersBtn = new JButton("List Users");
-        JButton saveDataBtn = new JButton("Save Data");
-        JButton exitBtn = new JButton("Exit");
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
 
-        buttonPanel.add(addStudentBtn);
-        buttonPanel.add(addTeacherBtn);
-        buttonPanel.add(listUsersBtn);
-        buttonPanel.add(saveDataBtn);
-        buttonPanel.add(exitBtn);
+        mainPanel.add(createLoginPanel(), "login");
+        mainPanel.add(createRegisterPanel(), "register");
 
-        outputArea = new JTextArea();
-        outputArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(outputArea);
-
-        add(buttonPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-
-        addStudentBtn.addActionListener(e -> addStudent());
-        addTeacherBtn.addActionListener(e -> addTeacher());
-        listUsersBtn.addActionListener(e -> listUsers());
-        saveDataBtn.addActionListener(e -> saveData());
-        exitBtn.addActionListener(e -> System.exit(0));
-
-        setVisible(true);
+        frame.add(mainPanel);
+        frame.setVisible(true);
     }
 
-    private void addStudent() {
-        try {
-            String name = JOptionPane.showInputDialog(this, "Enter Student Name:");
-            if (name == null || name.trim().isEmpty()) return;
+    private JPanel createLoginPanel() {
+        JPanel panel = new JPanel(new GridLayout(5, 2));
 
-            int age = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Student Age:"));
-            Student s = new Student(name, age);
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
 
-            while (true) {
-                String course = JOptionPane.showInputDialog(this, "Enter Course (or leave blank to finish):");
-                if (course == null || course.trim().isEmpty()) break;
-                s.enroll(new Course(course));
+        JButton loginButton = new JButton("Login");
+        JButton registerButton = new JButton("Register");
+
+        JLabel messageLabel = new JLabel("");
+
+        panel.add(new JLabel("Username:"));
+        panel.add(usernameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(passwordField);
+        panel.add(loginButton);
+        panel.add(registerButton);
+        panel.add(messageLabel);
+
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+
+            List<Student> students = Database.loadStudents();
+            List<Teacher> teachers = Database.loadTeachers();
+
+            User foundUser = null;
+            for (Student s : students) {
+                if (s.getUsername().equals(username) && s.getPassword().equals(password)) {
+                    foundUser = s;
+                    break;
+                }
+            }
+            if (foundUser == null) {
+                for (Teacher t : teachers) {
+                    if (t.getUsername().equals(username) && t.getPassword().equals(password)) {
+                        foundUser = t;
+                        break;
+                    }
+                }
             }
 
-            students.add(s);
-            outputArea.append("Student added.
-");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input.");
-        }
+            if (foundUser != null) {
+                JOptionPane.showMessageDialog(frame, "Login successful: " + foundUser.getInfo());
+            } else {
+                messageLabel.setText("Invalid username or password.");
+            }
+        });
+
+        registerButton.addActionListener(e -> cardLayout.show(mainPanel, "register"));
+
+        return panel;
     }
 
-    private void addTeacher() {
-        try {
-            String name = JOptionPane.showInputDialog(this, "Enter Teacher Name:");
-            if (name == null || name.trim().isEmpty()) return;
+    private JPanel createRegisterPanel() {
+        JPanel panel = new JPanel(new GridLayout(7, 2));
 
-            int age = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Teacher Age:"));
-            String subject = JOptionPane.showInputDialog(this, "Enter Subject:");
-            if (subject == null || subject.trim().isEmpty()) return;
+        JTextField firstNameField = new JTextField();
+        JTextField lastNameField = new JTextField();
+        JTextField usernameField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JComboBox<String> roleBox = new JComboBox<>(new String[]{"Student", "Teacher"});
 
-            teachers.add(new Teacher(name, age, subject));
-            outputArea.append("Teacher added.
-");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Invalid input.");
-        }
-    }
+        JButton submitButton = new JButton("Register");
+        JButton backButton = new JButton("Back");
+        JLabel messageLabel = new JLabel("");
 
-    private void listUsers() {
-        outputArea.setText("");
-        outputArea.append("--- Students ---\n");
-        for (Student s : students) outputArea.append(s.getInfo() + "\n");
-        outputArea.append("--- Teachers ---\n");
-        for (Teacher t : teachers) outputArea.append(t.getInfo() + "\n");
-    }
+        panel.add(new JLabel("First Name:"));
+        panel.add(firstNameField);
+        panel.add(new JLabel("Last Name:"));
+        panel.add(lastNameField);
+        panel.add(new JLabel("Username:"));
+        panel.add(usernameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(passwordField);
+        panel.add(new JLabel("Role:"));
+        panel.add(roleBox);
+        panel.add(submitButton);
+        panel.add(backButton);
+        panel.add(messageLabel);
 
-    private void saveData() {
-        try (PrintWriter writer = new PrintWriter("education_data.txt")) {
-            writer.println("Students:");
-            for (Student s : students) writer.println(s.getInfo());
-            writer.println("Teachers:");
-            for (Teacher t : teachers) writer.println(t.getInfo());
-            JOptionPane.showMessageDialog(this, "Data saved successfully.");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error saving file.");
-        }
+        submitButton.addActionListener(e -> {
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            String role = (String) roleBox.getSelectedItem();
+
+            if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || password.isEmpty()) {
+                messageLabel.setText("All fields are required.");
+                return;
+            }
+
+            if (role.equals("Student")) {
+                List<Student> students = Database.loadStudents();
+                students.add(new Student(username, password, firstName, lastName));
+                Database.saveStudents(students);
+            } else {
+                List<Teacher> teachers = Database.loadTeachers();
+                teachers.add(new Teacher(username, password, firstName, lastName));
+                Database.saveTeachers(teachers);
+            }
+
+            JOptionPane.showMessageDialog(frame, role + " registered successfully.");
+            cardLayout.show(mainPanel, "login");
+        });
+
+        backButton.addActionListener(e -> cardLayout.show(mainPanel, "login"));
+
+        return panel;
     }
 
     public static void main(String[] args) {

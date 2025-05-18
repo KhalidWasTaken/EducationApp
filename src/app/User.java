@@ -1,13 +1,39 @@
-package app;
+package education;
 
 public abstract class User {
-    protected String name;
-    protected int age;
+    protected String username;
+    protected String password;
+    protected String firstName;
+    protected String lastName;
 
-    public User(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public User(String username, String password, String firstName, String lastName) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public abstract String getInfo();
+
+    
+    public String toDataString() {
+        return username + "," + password;
+    }
+
 }
